@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class FXCameraController {
     // the id of the camera to be used
     private static int cameraId = 0;
-    String topicName = "stream1";
+    String topicName = "live1";
     //Creating Kafka Topic programatically.
     NewTopic topicCreated = ProducerVideoMessages.createTopics(topicName);
     int i = 0;
@@ -38,7 +38,7 @@ public class FXCameraController {
     // a timer for acquiring the video stream
     private ScheduledExecutorService timer;
     // the OpenCV object that realizes the video capture
-    private VideoCapture publisherApp = new VideoCapture();
+    private VideoCapture videoCapture = new VideoCapture();
     // a flag to change the button behavior
     private boolean cameraActive = false;
 
@@ -54,9 +54,9 @@ public class FXCameraController {
     protected void startCamera(ActionEvent event) {
         if (!this.cameraActive) {
             // start the video capture
-            this.publisherApp.open(cameraId);
+            this.videoCapture.open(cameraId);
             // is the video stream available?
-            if (this.publisherApp.isOpened()) {
+            if (this.videoCapture.isOpened()) {
                 this.cameraActive = true;
                 // grab a frame every 33 ms (30 frames/sec)
                 Runnable frameGrabber = new Runnable() {
@@ -99,10 +99,10 @@ public class FXCameraController {
         Mat frame = new Mat();
         BufferedImage bi = null;
         // check if the capture is open
-        if (this.publisherApp.isOpened()) {
+        if (this.videoCapture.isOpened()) {
             try {
                 // read the current frame
-                this.publisherApp.read(frame);
+                this.videoCapture.read(frame);
 
                 // if the frame is not empty, process it
                 if (!frame.empty()) {
@@ -134,9 +134,9 @@ public class FXCameraController {
             }
         }
 
-        if (this.publisherApp.isOpened()) {
+        if (this.videoCapture.isOpened()) {
             // release the camera
-            this.publisherApp.release();
+            this.videoCapture.release();
         }
     }
 
